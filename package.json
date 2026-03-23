@@ -1,0 +1,20 @@
+{
+  "name": "fantasygenconf",
+  "version": "1.0.0",
+  "description": "Fantasy General Conference - family prediction game",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/src/index.js",
+    "client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm run build && node server/src/index.js",
+    "seed": "node server/src/db/seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
