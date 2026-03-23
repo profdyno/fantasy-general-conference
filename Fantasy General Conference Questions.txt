@@ -1,0 +1,92 @@
+Questions:
+
+U.S. TEMPLES
+Guess 2 locations of new temples in the United States.
+- Location 1 (10 points)
+- Location 2 (10 points)
+Is it possible to have a drop down with all locations in the US?
+
+WORLDWIDE TEMPLES
+Guess 2 locations of new temples in the United States.
+- Location 1 (10 points)
+- Location 2 (10 points)
+Is it possible to have a drop down with all locations in the world?
+
+TOPICS
+Guess a specific topic that will be addressed during Conference
+- Topic 1 (10 points)
+- Topic 2 (10 points)
+Select from drop down with Gospel Topics
+
+SONGS
+Guess up to 4 songs that will sung during General Conference
+- Song 1 (10 points)
+- Song 2 (10 points)
+- Song 3 (10 points)
+- Song 4 (10 points)
+
+CHOIR CLOTHING
+Guess what color the women in the choir will be wearing during each session
+- Saturday AM (10 points)
+- Saturday AFTERNOON (10 points)
+- Saturday PM (10 points)
+- Saturday AM (10 points)
+- Saturday PM (10 points)
+Select from a list of primary colors
+
+CONDUCTING
+Who from the First Presidency or Quorum of the Twelve will conduct each session?
+- Saturday AM (10 points)
+- Saturday AFTERNOON (10 points)
+- Saturday PM (10 points)
+- Saturday AM (10 points)
+- Saturday PM (10 points)
+Select from list that is updated each conference
+President Dallin H. Oaks, President Henry B. Eyring, President D. Todd Christofferson, President Dieter F. Uchtdorf, Elder David A. Bednar, Elder Quentin L. Cook, Elder Neil L. Andersen, Elder Ronald A. Rasband, Elder Gary E. Stevenson, Elder Dale G. Renlund, Elder Gerrit W. Gong, Elder Ulisses Soares, Elder Patrick Kearon, Elder Gérald Caussé, Elder Clark G. Gilbert
+
+NEW TEMPLES
+- 0 to 5
+- 6 to 10
+- 11+
+Multiple choice, 5 points if correct
+
+UCHTDORF FLIGHT STORY
+- Yes
+- No
+Multiple choice, 5 points if correct
+
+WEATHER
+- Sunny
+- Cloudy
+- Rain
+- Snow
+Multiple choice and possible that more than one choice is correct, 5 points if correct
+
+YOUTH CHOIR
+- Yes
+- No
+Multiple choice, 5 points if correct
+
+SPEAKERS
+For each speaker create a box that contains
+
+Speaker Name
+Predicted Session - Drop down box with following options Saturday AM, Saturday AFTERNOON, Saturday PM, Saturday AM, Saturday PM.  10 points if correct (this field is locked with others)
+Actual Session - Drop down box with following options Saturday AM, Saturday AFTERNOON, Saturday PM, Saturday AM, Saturday PM.  5 points if correct (this field is not locked with others, if the player selects the correct answer any time before the final tally is made they get 5 points)
+Topic - Open text field.  5 points if anything is entered before the final tally is made
+Prompting to - Start/Stop/Continue (radial buttons) and open text field (no points)
+
+List of speakers
+President Dallin H. Oaks, President Henry B. Eyring, President D. Todd Christofferson, President Dieter F. Uchtdorf, Elder David A. Bednar, Elder Quentin L. Cook, Elder Neil L. Andersen, Elder Ronald A. Rasband, Elder Gary E. Stevenson, Elder Dale G. Renlund, Elder Gerrit W. Gong, Elder Ulisses Soares, Elder Patrick Kearon, Elder Gérald Caussé, Elder Clark G. Gilbert
+(This list is the same as the drop for conducting and should be able to be easily changed each game)
+
+PENALTIES (Subtract 5 points for every single infraction unless the activity is approved by Mom or Dad)
+Fighting
+Sleeping
+Phone Use
+Leaving
+
+For each item, include a series of 10 check boxes.  For each checked subtract 5 points.
+
+Scoring:
+Total Points = Points Earned - Penalty Points

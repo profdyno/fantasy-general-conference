@@ -29,11 +29,20 @@ export function adminLogin(password) {
 export function getGame() {
   return apiFetch('/admin/game');
 }
+export function getAllGames() {
+  return apiFetch('/admin/games');
+}
 export function createGame(name, year, season) {
   return apiFetch('/admin/game', { method: 'POST', body: JSON.stringify({ name, year, season }) });
 }
 export function updateGame(id, data) {
   return apiFetch(`/admin/game/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+}
+export function activateGame(id) {
+  return apiFetch(`/admin/game/${id}/activate`, { method: 'POST' });
+}
+export function deleteGame(id) {
+  return apiFetch(`/admin/game/${id}`, { method: 'DELETE' });
 }
 export function lockSubmissions() {
   return apiFetch('/admin/lock', { method: 'POST' });
@@ -69,8 +78,11 @@ export function getPlayers() {
 export function getPlayerBySlug(slug) {
   return apiFetch(`/players/${slug}`);
 }
-export function createPlayer(name) {
-  return apiFetch('/players', { method: 'POST', body: JSON.stringify({ name }) });
+export function createPlayer(name, email, role, parent1_id, parent2_id) {
+  return apiFetch('/players', { method: 'POST', body: JSON.stringify({ name, email, role, parent1_id, parent2_id }) });
+}
+export function updatePlayer(id, data) {
+  return apiFetch(`/players/${id}`, { method: 'PUT', body: JSON.stringify(data) });
 }
 export function deletePlayer(id) {
   return apiFetch(`/players/${id}`, { method: 'DELETE' });
@@ -87,6 +99,10 @@ export function submitAnswersBulk(answers) {
   return apiFetch('/answers/bulk', { method: 'POST', body: JSON.stringify({ answers }) });
 }
 
+export function getAllAnswers() {
+  return apiFetch('/answers/all');
+}
+
 // Actuals
 export function getActuals() {
   return apiFetch('/actuals');
@@ -96,6 +112,9 @@ export function submitActual(question_id, actual_value) {
 }
 
 // Scores
+export function getScoreMatrix() {
+  return apiFetch('/scores/matrix');
+}
 export function getLeaderboard(session_id) {
   const params = session_id ? `?session_id=${session_id}` : '';
   return apiFetch(`/scores/leaderboard${params}`);
@@ -108,4 +127,18 @@ export function submitCustomScore(question_id, player_id, points_earned) {
 }
 export function recomputeScores() {
   return apiFetch('/scores/recompute', { method: 'POST' });
+}
+
+// Penalties
+export function getPenalties() {
+  return apiFetch('/penalties');
+}
+export function updatePenalty(player_id, penalty_type, count) {
+  return apiFetch('/penalties', { method: 'POST', body: JSON.stringify({ player_id, penalty_type, count }) });
+}
+export function getAllowedPenalties(slug) {
+  return apiFetch(`/penalties/allowed/${slug}`);
+}
+export function updatePenaltyAsPlayer(slug, target_player_id, penalty_type, count) {
+  return apiFetch('/penalties/player', { method: 'POST', body: JSON.stringify({ slug, target_player_id, penalty_type, count }) });
 }

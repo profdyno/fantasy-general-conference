@@ -18,6 +18,12 @@ function getDb() {
 
     const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
     db.exec(schema);
+
+    // Migrations
+    const playerCols = db.prepare('PRAGMA table_info(players)').all().map(c => c.name);
+    if (!playerCols.includes('role')) db.exec("ALTER TABLE players ADD COLUMN role TEXT DEFAULT 'parent'");
+    if (!playerCols.includes('parent1_id')) db.exec('ALTER TABLE players ADD COLUMN parent1_id INTEGER');
+    if (!playerCols.includes('parent2_id')) db.exec('ALTER TABLE players ADD COLUMN parent2_id INTEGER');
   }
   return db;
 }

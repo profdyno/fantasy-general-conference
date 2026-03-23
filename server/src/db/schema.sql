@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS games (
     id                INTEGER PRIMARY KEY AUTOINCREMENT,
     name              TEXT NOT NULL,
     year              INTEGER NOT NULL,
-    season            TEXT NOT NULL CHECK(season IN ('april', 'october')),
+    season            TEXT NOT NULL CHECK(season IN ('april', 'october', 'test')),
     is_active         INTEGER NOT NULL DEFAULT 1,
     submissions_locked INTEGER NOT NULL DEFAULT 0,
     created_at        TEXT DEFAULT (datetime('now', 'localtime')),
@@ -25,6 +25,10 @@ CREATE TABLE IF NOT EXISTS players (
     game_id         INTEGER NOT NULL REFERENCES games(id) ON DELETE CASCADE,
     name            TEXT NOT NULL,
     slug            TEXT NOT NULL,
+    email           TEXT,
+    role            TEXT DEFAULT 'parent',
+    parent1_id      INTEGER REFERENCES players(id),
+    parent2_id      INTEGER REFERENCES players(id),
     is_active       INTEGER NOT NULL DEFAULT 1,
     created_at      TEXT DEFAULT (datetime('now', 'localtime')),
     UNIQUE(game_id, slug)
@@ -37,12 +41,15 @@ CREATE TABLE IF NOT EXISTS questions (
     session_id      INTEGER REFERENCES sessions(id) ON DELETE SET NULL,
     sort_order      INTEGER NOT NULL DEFAULT 0,
     text            TEXT NOT NULL,
-    question_type   TEXT NOT NULL CHECK(question_type IN ('multiple_choice', 'yes_no', 'number', 'text')),
+    question_type   TEXT NOT NULL,
     options         TEXT,
-    scoring_type    TEXT NOT NULL CHECK(scoring_type IN ('exact', 'closest', 'contains', 'custom_points', 'boolean')),
+    scoring_type    TEXT NOT NULL,
     points          INTEGER NOT NULL DEFAULT 10,
     bonus_points    INTEGER DEFAULT 0,
     tolerance       REAL,
+    category        TEXT,
+    group_key       TEXT,
+    allow_after_lock INTEGER NOT NULL DEFAULT 0,
     created_at      TEXT DEFAULT (datetime('now', 'localtime'))
 );
 
@@ -76,6 +83,17 @@ CREATE TABLE IF NOT EXISTS scores (
     UNIQUE(question_id, player_id)
 );
 
+-- Penalties (admin-tracked per player during conference)
+CREATE TABLE IF NOT EXISTS penalties (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    game_id         INTEGER NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+    player_id       INTEGER NOT NULL REFERENCES players(id) ON DELETE CASCADE,
+    penalty_type    TEXT NOT NULL,
+    count           INTEGER NOT NULL DEFAULT 0,
+    updated_at      TEXT DEFAULT (datetime('now', 'localtime')),
+    UNIQUE(game_id, player_id, penalty_type)
+);
+
 -- Settings (admin password, etc.)
 CREATE TABLE IF NOT EXISTS settings (
     key             TEXT PRIMARY KEY,
@@ -86,7 +104,9 @@ CREATE TABLE IF NOT EXISTS settings (
 CREATE INDEX IF NOT EXISTS idx_players_game_slug ON players(game_id, slug);
 CREATE INDEX IF NOT EXISTS idx_questions_game ON questions(game_id);
 CREATE INDEX IF NOT EXISTS idx_questions_session ON questions(session_id);
+CREATE INDEX IF NOT EXISTS idx_questions_category ON questions(game_id, category);
 CREATE INDEX IF NOT EXISTS idx_answers_question ON answers(question_id);
 CREATE INDEX IF NOT EXISTS idx_answers_player ON answers(player_id);
 CREATE INDEX IF NOT EXISTS idx_scores_player ON scores(player_id);
 CREATE INDEX IF NOT EXISTS idx_scores_question ON scores(question_id);
+CREATE INDEX IF NOT EXISTS idx_penalties_player ON penalties(game_id, player_id);

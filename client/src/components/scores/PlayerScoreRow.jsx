@@ -28,6 +28,9 @@ export default function PlayerScoreRow({ rank, entry, expanded, details, onToggl
         <td style={{ ...styles.td, ...styles.name }}>{entry.name}</td>
         <td style={{ ...styles.td, ...styles.tdRight, ...styles.points }}>
           {Math.round(entry.total_points * 10) / 10}
+          {entry.penalty_points > 0 && (
+            <div style={{ fontSize: '11px', color: '#dc2626', fontWeight: 400 }}>(-{entry.penalty_points} penalties)</div>
+          )}
         </td>
         <td style={{ ...styles.td, ...styles.tdRight }}>
           {entry.correct_count}/{entry.answered_count}

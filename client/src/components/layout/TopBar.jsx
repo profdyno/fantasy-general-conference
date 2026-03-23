@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { getGame } from '../../api/client'
 
 const styles = {
   bar: {
@@ -36,6 +38,11 @@ const styles = {
 
 export default function TopBar() {
   const location = useLocation()
+  const [locked, setLocked] = useState(false)
+
+  useEffect(() => {
+    getGame().then(g => setLocked(!!g.submissions_locked)).catch(() => {})
+  }, [location.pathname])
 
   const linkStyle = (path) => ({
     ...styles.link,
@@ -46,7 +53,12 @@ export default function TopBar() {
     <div style={styles.bar}>
       <div style={styles.title}>Fantasy General Conference</div>
       <nav style={styles.nav}>
+        {sessionStorage.getItem('playerSlug') && (
+          <Link to={`/play/${sessionStorage.getItem('playerSlug')}`} style={linkStyle('/play')}>Play</Link>
+        )}
         <Link to="/scores" style={linkStyle('/scores')}>Scoreboard</Link>
+        {locked && <Link to="/penalties" style={linkStyle('/penalties')}>Penalties</Link>}
+        <Link to="/help" style={linkStyle('/help')}>Help</Link>
         <Link to="/admin" style={linkStyle('/admin')}>Admin</Link>
       </nav>
     </div>

@@ -4,6 +4,7 @@ import QuestionManager from './QuestionManager'
 import ActualsEntry from './ActualsEntry'
 import PlayerManager from './PlayerManager'
 import GameControls from './GameControls'
+import PenaltyManager from './PenaltyManager'
 
 const styles = {
   container: { maxWidth: '900px', margin: '0 auto', padding: '24px 16px' },
@@ -91,7 +92,8 @@ export default function AdminPage() {
   const tabs = [
     { id: 'questions', label: 'Questions' },
     { id: 'players', label: 'Players' },
-    { id: 'actuals', label: 'Enter Actuals' },
+    { id: 'actuals', label: 'Answers' },
+    { id: 'penalties', label: 'Penalties' },
     { id: 'settings', label: 'Game Settings' },
   ]
 
@@ -114,6 +116,7 @@ export default function AdminPage() {
       {activeTab === 'questions' && <QuestionManager />}
       {activeTab === 'players' && <PlayerManager />}
       {activeTab === 'actuals' && <ActualsEntry />}
+      {activeTab === 'penalties' && <PenaltyManager />}
       {activeTab === 'settings' && <GameControls game={game} onUpdate={loadGame} />}
     </div>
   )

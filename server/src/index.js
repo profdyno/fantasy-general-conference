@@ -21,6 +21,7 @@ app.use('/api/players', require('./routes/players'));
 app.use('/api/answers', require('./routes/answers'));
 app.use('/api/actuals', require('./routes/actuals'));
 app.use('/api/scores', require('./routes/scores'));
+app.use('/api/penalties', require('./routes/penalties'));
 app.use('/api/events', require('./routes/events').router);
 
 // API error handler
