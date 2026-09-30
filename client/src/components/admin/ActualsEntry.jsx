@@ -253,34 +253,52 @@ export default function ActualsEntry() {
 
     return speakers.map(speaker => {
       const speakerQs = speakerGroups[speaker]
-      // Find the session questions (Predicted + Actual share the same answer)
-      const sessionQs = speakerQs.filter(q => q.text === 'Predicted Session' || q.text === 'Actual Session')
       const topicQ = speakerQs.find(q => q.text === 'Topic')
-      const firstSessionQ = sessionQs[0]
-      const sessionOptions = firstSessionQ?.options ? (typeof firstSessionQ.options === 'string' ? JSON.parse(firstSessionQ.options) : firstSessionQ.options) : []
-      const anyScored = sessionQs.some(q => actuals[q.id])
 
-      // Session value: use first session question's value
-      const sessionVal = values[firstSessionQ?.id] || ''
+      // Group session pairs: "Predicted Session 1" + "Actual Session 1" share one actual
+      // Also handle old format: "Predicted Session" + "Actual Session"
+      const sessionPairs = []
+      const predictedQs = speakerQs.filter(q => q.text.startsWith('Predicted Session'))
+        .sort((a, b) => a.text.localeCompare(b.text))
 
-      function setSessionVal(v) {
-        // Set the same value for all session questions
-        for (const q of sessionQs) {
-          setVal(q.id, v)
-        }
+      for (const pq of predictedQs) {
+        const num = pq.text.replace('Predicted Session', '').trim()
+        const actualText = num ? `Actual Session ${num}` : 'Actual Session'
+        const aq = speakerQs.find(q => q.text === actualText)
+        sessionPairs.push({ predicted: pq, actual: aq, label: num ? `Session ${num}` : 'Session' })
       }
 
+      // If no numbered pairs found, fall back to old single pair
+      if (sessionPairs.length === 0) {
+        const pq = speakerQs.find(q => q.text === 'Predicted Session')
+        const aq = speakerQs.find(q => q.text === 'Actual Session')
+        if (pq) sessionPairs.push({ predicted: pq, actual: aq, label: 'Session' })
+      }
+
+      const firstQ = sessionPairs[0]?.predicted
+      const sessionOptions = firstQ?.options ? (typeof firstQ.options === 'string' ? JSON.parse(firstQ.options) : firstQ.options) : []
+      const allSessionQs = sessionPairs.flatMap(p => [p.predicted, p.actual].filter(Boolean))
+      const anyScored = allSessionQs.some(q => actuals[q.id])
+
       async function saveSpeaker() {
-        const val = sessionVal
-        if (!val) return
-        for (const q of sessionQs) {
-          await submitActual(q.id, val)
-          setActuals(prev => ({ ...prev, [q.id]: val }))
+        for (const pair of sessionPairs) {
+          const val = values[pair.predicted?.id] || ''
+          if (!val) continue
+          // Set same actual for predicted and actual session questions
+          if (pair.predicted) {
+            await submitActual(pair.predicted.id, val)
+            setActuals(prev => ({ ...prev, [pair.predicted.id]: val }))
+          }
+          if (pair.actual) {
+            await submitActual(pair.actual.id, val)
+            setActuals(prev => ({ ...prev, [pair.actual.id]: val }))
+          }
         }
-        // Also score topic as any_value if it has an answer
+        // Also score topic
         if (topicQ) {
-          await submitActual(topicQ.id, val) // actual value doesn't matter for any_value, just needs to exist
-          setActuals(prev => ({ ...prev, [topicQ.id]: val }))
+          const anyVal = values[sessionPairs[0]?.predicted?.id] || 'scored'
+          await submitActual(topicQ.id, anyVal)
+          setActuals(prev => ({ ...prev, [topicQ.id]: anyVal }))
         }
         setSavedIds(prev => {
           const next = new Set(prev)
@@ -294,7 +312,7 @@ export default function ActualsEntry() {
         }), 2000)
       }
 
-      const allSaved = sessionQs.every(q => savedIds.has(q.id))
+      const allSaved = allSessionQs.every(q => savedIds.has(q.id))
 
       return (
         <div key={speaker} style={{ ...styles.speakerCard, ...(anyScored ? styles.speakerScored : {}) }}>
@@ -302,11 +320,25 @@ export default function ActualsEntry() {
             <div style={styles.speakerName}>{speaker}</div>
             {anyScored && <span style={styles.scoredBadge}>Scored</span>}
           </div>
-          <div style={styles.fieldRow}>
-            <select style={styles.fieldInput} value={sessionVal} onChange={e => setSessionVal(e.target.value)}>
-              <option value="">-- Select Session --</option>
-              {sessionOptions.map(o => <option key={o} value={o}>{o}</option>)}
-            </select>
+          {sessionPairs.map((pair, i) => (
+            <div key={i} style={{ ...styles.fieldRow, marginBottom: sessionPairs.length > 1 ? '6px' : 0 }}>
+              {sessionPairs.length > 1 && (
+                <span style={{ fontSize: '12px', color: '#888', minWidth: '65px', flexShrink: 0 }}>{pair.label}</span>
+              )}
+              <select
+                style={styles.fieldInput}
+                value={values[pair.predicted?.id] || ''}
+                onChange={e => {
+                  if (pair.predicted) setVal(pair.predicted.id, e.target.value)
+                  if (pair.actual) setVal(pair.actual.id, e.target.value)
+                }}
+              >
+                <option value="">-- Select Session --</option>
+                {sessionOptions.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            </div>
+          ))}
+          <div style={{ marginTop: '8px' }}>
             {allSaved ? (
               <button style={{ ...styles.fieldSaveBtn, background: '#16a34a' }}>Saved!</button>
             ) : (

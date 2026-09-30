@@ -5,6 +5,7 @@ import ActualsEntry from './ActualsEntry'
 import PlayerManager from './PlayerManager'
 import GameControls from './GameControls'
 import PenaltyManager from './PenaltyManager'
+import Leaderboard from './Leaderboard'
 
 const styles = {
   container: { maxWidth: '900px', margin: '0 auto', padding: '24px 16px' },
@@ -90,6 +91,7 @@ export default function AdminPage() {
   }
 
   const tabs = [
+    { id: 'leaderboard', label: 'Leaderboard' },
     { id: 'questions', label: 'Questions' },
     { id: 'players', label: 'Players' },
     { id: 'actuals', label: 'Answers' },
@@ -113,6 +115,7 @@ export default function AdminPage() {
         ))}
       </div>
 
+      {activeTab === 'leaderboard' && <Leaderboard />}
       {activeTab === 'questions' && <QuestionManager />}
       {activeTab === 'players' && <PlayerManager />}
       {activeTab === 'actuals' && <ActualsEntry />}
