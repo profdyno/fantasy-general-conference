@@ -1,21 +1,10 @@
 Questions:
 
-U.S. TEMPLES
-Guess 2 locations of new temples in the United States.
-- Location 1 (10 points)
-- Location 2 (10 points)
-Is it possible to have a drop down with all locations in the US?
-
-WORLDWIDE TEMPLES
-Guess 2 locations of new temples in the United States.
-- Location 1 (10 points)
-- Location 2 (10 points)
-Is it possible to have a drop down with all locations in the world?
-
 TOPICS
 Guess a specific topic that will be addressed during Conference
 - Topic 1 (10 points)
 - Topic 2 (10 points)
+- Topic 3 (10 points)
 Select from drop down with Gospel Topics
 
 SONGS
@@ -28,7 +17,6 @@ Guess up to 4 songs that will sung during General Conference
 CHOIR CLOTHING
 Guess what color the women in the choir will be wearing during each session
 - Saturday AM (10 points)
-- Saturday AFTERNOON (10 points)
 - Saturday PM (10 points)
 - Saturday AM (10 points)
 - Saturday PM (10 points)
@@ -37,18 +25,11 @@ Select from a list of primary colors
 CONDUCTING
 Who from the First Presidency or Quorum of the Twelve will conduct each session?
 - Saturday AM (10 points)
-- Saturday AFTERNOON (10 points)
 - Saturday PM (10 points)
 - Saturday AM (10 points)
 - Saturday PM (10 points)
 Select from list that is updated each conference
 President Dallin H. Oaks, President Henry B. Eyring, President D. Todd Christofferson, President Dieter F. Uchtdorf, Elder David A. Bednar, Elder Quentin L. Cook, Elder Neil L. Andersen, Elder Ronald A. Rasband, Elder Gary E. Stevenson, Elder Dale G. Renlund, Elder Gerrit W. Gong, Elder Ulisses Soares, Elder Patrick Kearon, Elder Gérald Caussé, Elder Clark G. Gilbert
-
-NEW TEMPLES
-- 0 to 5
-- 6 to 10
-- 11+
-Multiple choice, 5 points if correct
 
 UCHTDORF FLIGHT STORY
 - Yes

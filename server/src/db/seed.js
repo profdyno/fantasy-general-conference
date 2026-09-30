@@ -12,7 +12,6 @@ db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run('ad
 const SESSION_NAMES = [
   'Saturday Morning',
   'Saturday Afternoon',
-  'Saturday Evening',
   'Sunday Morning',
   'Sunday Afternoon',
 ];
@@ -247,11 +246,19 @@ db.prepare('INSERT OR IGNORE INTO games (name, year, season, is_active) VALUES (
   'Test 2026 General Conference', 2026, 'test', 0
 );
 
-// ── Create April 2026 Game ───────────────────────────────────────────────────
-const gameResult = db.prepare('INSERT OR IGNORE INTO games (name, year, season, is_active) VALUES (?, ?, ?, ?)').run(
-  'April 2026 General Conference', 2026, 'april', 1
+// ── Create October 2026 Game ─────────────────────────────────────────────────
+// Only one game may be active; earlier games (e.g. April 2026) are kept but deactivated.
+db.prepare("UPDATE games SET is_active = 0 WHERE NOT (year = 2026 AND season = 'october')").run();
+db.prepare('INSERT OR IGNORE INTO games (name, year, season, is_active) VALUES (?, ?, ?, ?)').run(
+  'October 2026 General Conference', 2026, 'october', 1
 );
-const game = db.prepare("SELECT * FROM games WHERE year = 2026 AND season = 'april'").get();
+const game = db.prepare("SELECT * FROM games WHERE year = 2026 AND season = 'october'").get();
+db.prepare('UPDATE games SET is_active = 1 WHERE id = ?').run(game.id);
+
+if (db.prepare('SELECT COUNT(*) AS n FROM sessions WHERE game_id = ?').get(game.id).n > 0) {
+  console.log(`${game.name} is already seeded (id: ${game.id}); nothing to do.`);
+  process.exit(0);
+}
 const sessions = createSessions(game.id);
 
 const insertQ = db.prepare(`
@@ -278,17 +285,10 @@ function addQ(opts) {
   );
 }
 
-// ── U.S. TEMPLES ─────────────────────────────────────────────────────────────
-addQ({ text: 'U.S. Temple Location - Guess 1', question_type: 'city_us', scoring_type: 'contains', points: 10, category: 'U.S. Temples' });
-addQ({ text: 'U.S. Temple Location - Guess 2', question_type: 'city_us', scoring_type: 'contains', points: 10, category: 'U.S. Temples' });
-
-// ── WORLDWIDE TEMPLES ────────────────────────────────────────────────────────
-addQ({ text: 'Worldwide Temple Location - Guess 1', question_type: 'city_world', scoring_type: 'contains', points: 10, category: 'Worldwide Temples' });
-addQ({ text: 'Worldwide Temple Location - Guess 2', question_type: 'city_world', scoring_type: 'contains', points: 10, category: 'Worldwide Temples' });
-
 // ── TOPICS ────────────────────────────────────────────────────────────────────
 addQ({ text: 'Conference Topic - Guess 1', question_type: 'dropdown', options: GOSPEL_TOPICS, scoring_type: 'contains', points: 10, category: 'Topics' });
 addQ({ text: 'Conference Topic - Guess 2', question_type: 'dropdown', options: GOSPEL_TOPICS, scoring_type: 'contains', points: 10, category: 'Topics' });
+addQ({ text: 'Conference Topic - Guess 3', question_type: 'dropdown', options: GOSPEL_TOPICS, scoring_type: 'contains', points: 10, category: 'Topics' });
 
 // ── SONGS ─────────────────────────────────────────────────────────────────────
 addQ({ text: 'Hymn - Guess 1', question_type: 'dropdown', options: HYMNS, scoring_type: 'contains', points: 10, category: 'Songs' });
@@ -315,7 +315,6 @@ for (const name of SESSION_NAMES) {
 }
 
 // ── QUICK PICKS ───────────────────────────────────────────────────────────────
-addQ({ text: 'How many new temples will be announced?', question_type: 'multiple_choice', options: ['0 to 5', '6 to 10', '11+'], scoring_type: 'exact', points: 5, category: 'Quick Picks' });
 addQ({ text: 'Will Uchtdorf tell a flight story?', question_type: 'yes_no', scoring_type: 'boolean', points: 5, category: 'Quick Picks' });
 addQ({ text: 'What will the weather be on Saturday?', question_type: 'multi_select', options: ['Sunny', 'Cloudy', 'Rain', 'Snow'], scoring_type: 'contains', points: 5, category: 'Quick Picks' });
 addQ({ text: 'Will there be a Youth Choir?', question_type: 'yes_no', scoring_type: 'boolean', points: 5, category: 'Quick Picks' });
@@ -349,9 +348,9 @@ for (const speaker of LEADERS) {
 // ── OTHER SPEAKERS ────────────────────────────────────────────────────────────
 const OTHER_SPEAKERS = [
   { group: 'Presidency of the Seventy', names: [
-    'Elder Carl B. Cook','Elder S. Mark Palmer','Elder Marcus B. Nash',
-    'Elder Michael T. Ringwood','Elder Arnulfo Valenzuela','Elder Edward Dube',
-    'Elder Kevin R. Duncan',
+    'Elder Carl B. Cook','Elder Marcus B. Nash','Elder Michael T. Ringwood',
+    'Elder Arnulfo Valenzuela','Elder Edward Dube','Elder Kevin R. Duncan',
+    'Elder Benjamin M.Z. Tai',
   ]},
   { group: 'Presiding Bishopric', names: [
     'W. Christopher Waddell','L. Todd Budge','Sean Douglas',
@@ -369,7 +368,7 @@ const OTHER_SPEAKERS = [
     'Emily Belle Freeman','Tamara W. Runia','Andrea Muñoz Spannaus',
   ]},
   { group: 'Primary Presidency', names: [
-    'Susan H. Porter','Amy A. Wright','Tracy Y. Browning',
+    'Rosemary K. Chibota','Nina M. Garfield','Theresa A. Collins',
   ]},
 ];
 
