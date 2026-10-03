@@ -127,4 +127,38 @@ router.post('/sessions', adminAuth, (req, res) => {
   res.json(result);
 });
 
+// Default dropdown lists (topics, hymns) for future games
+const DEFAULT_LISTS = ['topics', 'hymns'];
+
+router.get('/defaults', adminAuth, (req, res) => {
+  const db = getDb();
+  const result = {};
+  for (const list of DEFAULT_LISTS) {
+    result[list] = db.prepare('SELECT id, value FROM default_options WHERE list = ? ORDER BY value').all(list);
+  }
+  res.json(result);
+});
+
+router.post('/defaults/:list', adminAuth, (req, res) => {
+  const { list } = req.params;
+  if (!DEFAULT_LISTS.includes(list)) return res.status(400).json({ error: 'Unknown list' });
+  const value = (req.body.value || '').trim();
+  if (!value) return res.status(400).json({ error: 'Value required' });
+  if (value.length > 200) return res.status(400).json({ error: 'Value is too long' });
+
+  const db = getDb();
+  const existing = db.prepare('SELECT value FROM default_options WHERE list = ? AND value = ?').get(list, value);
+  if (existing) return res.status(400).json({ error: `"${existing.value}" is already in the list` });
+
+  const result = db.prepare('INSERT INTO default_options (list, value) VALUES (?, ?)').run(list, value);
+  res.json(db.prepare('SELECT id, value FROM default_options WHERE id = ?').get(result.lastInsertRowid));
+});
+
+router.delete('/defaults/:list/:id', adminAuth, (req, res) => {
+  const db = getDb();
+  const result = db.prepare('DELETE FROM default_options WHERE list = ? AND id = ?').run(req.params.list, req.params.id);
+  if (result.changes === 0) return res.status(404).json({ error: 'Not found' });
+  res.json({ success: true });
+});
+
 module.exports = router;

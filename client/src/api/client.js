@@ -57,6 +57,17 @@ export function saveSessions(sessions) {
   return apiFetch('/admin/sessions', { method: 'POST', body: JSON.stringify({ sessions }) });
 }
 
+// Default lists (topics, hymns) for future games
+export function getDefaultLists() {
+  return apiFetch('/admin/defaults');
+}
+export function addDefaultOption(list, value) {
+  return apiFetch(`/admin/defaults/${list}`, { method: 'POST', body: JSON.stringify({ value }) });
+}
+export function deleteDefaultOption(list, id) {
+  return apiFetch(`/admin/defaults/${list}/${id}`, { method: 'DELETE' });
+}
+
 // Questions
 export function getQuestions() {
   return apiFetch('/questions');

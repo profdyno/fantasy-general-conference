@@ -100,6 +100,15 @@ CREATE TABLE IF NOT EXISTS settings (
     value           TEXT
 );
 
+-- Default dropdown lists (topics, hymns) used when creating future games
+CREATE TABLE IF NOT EXISTS default_options (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    list            TEXT NOT NULL CHECK(list IN ('topics', 'hymns')),
+    value           TEXT NOT NULL COLLATE NOCASE,
+    created_at      TEXT DEFAULT (datetime('now', 'localtime')),
+    UNIQUE(list, value)
+);
+
 -- Indexes
 CREATE INDEX IF NOT EXISTS idx_players_game_slug ON players(game_id, slug);
 CREATE INDEX IF NOT EXISTS idx_questions_game ON questions(game_id);

@@ -6,6 +6,7 @@ import PlayerManager from './PlayerManager'
 import GameControls from './GameControls'
 import PenaltyManager from './PenaltyManager'
 import Leaderboard from './Leaderboard'
+import DefaultLists from './DefaultLists'
 
 const styles = {
   container: { maxWidth: '900px', margin: '0 auto', padding: '24px 16px' },
@@ -96,6 +97,7 @@ export default function AdminPage() {
     { id: 'players', label: 'Players' },
     { id: 'actuals', label: 'Answers' },
     { id: 'penalties', label: 'Penalties' },
+    { id: 'defaults', label: 'Default Lists' },
     { id: 'settings', label: 'Game Settings' },
   ]
 
@@ -120,6 +122,7 @@ export default function AdminPage() {
       {activeTab === 'players' && <PlayerManager />}
       {activeTab === 'actuals' && <ActualsEntry />}
       {activeTab === 'penalties' && <PenaltyManager />}
+      {activeTab === 'defaults' && <DefaultLists />}
       {activeTab === 'settings' && <GameControls game={game} onUpdate={loadGame} />}
     </div>
   )
