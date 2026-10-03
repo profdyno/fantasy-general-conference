@@ -8,7 +8,16 @@ function computeScore(question, actualValue, playerValue) {
     }
 
     case 'exact': {
-      const match = playerValue.toLowerCase().trim() === actualValue.toLowerCase().trim();
+      // Actual may be a JSON array of several correct values (e.g. multi-colored choir)
+      let actualList;
+      try {
+        actualList = JSON.parse(actualValue);
+        if (!Array.isArray(actualList)) actualList = [actualValue];
+      } catch {
+        actualList = [actualValue];
+      }
+      const playerLower = playerValue.toLowerCase().trim();
+      const match = actualList.some(a => String(a).toLowerCase().trim() === playerLower);
       return { points: match ? question.points : 0, isCorrect: match };
     }
 

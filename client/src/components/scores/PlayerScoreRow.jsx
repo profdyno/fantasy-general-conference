@@ -1,3 +1,4 @@
+import { formatValue } from '../../utils/format'
 const styles = {
   row: {
     cursor: 'pointer', transition: 'background 0.15s',
@@ -49,7 +50,7 @@ export default function PlayerScoreRow({ rank, entry, expanded, details, onToggl
             </span>
           </td>
           <td style={{ ...styles.detailTd, ...styles.tdRight, fontSize: '12px', color: '#888' }}>
-            {d.answer_value || '—'} {d.actual_value ? `(actual: ${d.actual_value})` : ''}
+            {formatValue(d.answer_value) || '—'} {d.actual_value ? `(actual: ${formatValue(d.actual_value)})` : ''}
           </td>
         </tr>
       ))}

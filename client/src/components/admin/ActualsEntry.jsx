@@ -54,6 +54,15 @@ const styles = {
   radioLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' },
   checkboxGroup: { display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 },
   checkboxLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', cursor: 'pointer' },
+  chipRow: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '6px' },
+  chip: {
+    display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 4px 4px 10px',
+    borderRadius: '14px', background: '#eff6ff', border: '1px solid #bfdbfe', color: '#1e3a5f', fontSize: '13px',
+  },
+  chipRemove: {
+    border: 'none', background: 'transparent', color: '#dc2626', fontSize: '15px',
+    cursor: 'pointer', padding: '0 4px', lineHeight: 1,
+  },
 }
 
 export default function ActualsEntry() {
@@ -125,13 +134,40 @@ export default function ActualsEntry() {
           </div>
         )
 
-      case 'select':
+      case 'select': {
+        // Actual may have several correct values (e.g. multi-colored choir); stored as JSON array
+        let selected = []
+        try {
+          const parsed = val ? JSON.parse(val) : []
+          selected = Array.isArray(parsed) ? parsed : [String(parsed)]
+        } catch { selected = val ? [val] : [] }
+        function add(opt) {
+          if (!opt || selected.includes(opt)) return
+          setVal(q.id, JSON.stringify([...selected, opt]))
+        }
+        function remove(opt) {
+          const next = selected.filter(s => s !== opt)
+          setVal(q.id, next.length ? JSON.stringify(next) : '')
+        }
         return (
-          <select style={styles.select} value={val} onChange={e => setVal(q.id, e.target.value)}>
-            <option value="">-- Select --</option>
-            {options.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
+          <div style={{ flex: 1 }}>
+            {selected.length > 0 && (
+              <div style={styles.chipRow}>
+                {selected.map(s => (
+                  <span key={s} style={styles.chip}>
+                    {s}
+                    <button type="button" style={styles.chipRemove} onClick={() => remove(s)}>×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+            <select style={{ ...styles.select, width: '100%' }} value="" onChange={e => add(e.target.value)}>
+              <option value="">{selected.length ? '-- Add another --' : '-- Select --'}</option>
+              {options.filter(o => !selected.includes(o)).map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </div>
         )
+      }
 
       case 'dropdown':
         return (
